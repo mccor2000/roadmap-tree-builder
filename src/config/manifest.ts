@@ -1,19 +1,25 @@
 import * as Confidence from "confidence";
+import * as Config from "./config";
 
 let internals: any = {
   criteria: {
     env: process.env.NODE_ENV,
   },
-};
 
-internals.manifest = {
-  $meta: "App manifest document",
-  server: {
-    host: process.env.HOST,
-    port: process.env.PORT,
-  },
-  register: {
-    plugins: [],
+  manifest: {
+    $meta: "App manifest document",
+    server: {
+      host: process.env.HOST,
+      port: process.env.PORT,
+    },
+    register: {
+      plugins: [
+        {
+          plugin: "./datasources/mongodb",
+          options: Config.get("/mongodb"),
+        },
+      ],
+    },
   },
 };
 
