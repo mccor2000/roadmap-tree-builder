@@ -1,15 +1,17 @@
-import { model, Schema, Document } from "mongoose";
+import * as Mongoose from "mongoose";
 import { hash, compare } from "bcrypt";
 
-export interface User extends Document {
+export interface User extends Mongoose.Document {
   email: string;
   password: string;
   displayName: string;
   profilePicture: string;
   status: string;
+
+  authenticate: (password: string) => Promise<boolean>;
 }
 
-const UserSchema = new Schema(
+const UserSchema = new Mongoose.Schema(
   {
     email: {
       type: String,
@@ -24,7 +26,6 @@ const UserSchema = new Schema(
 
     profilePicture: {
       type: String,
-      required: true,
     },
 
     password: String,
@@ -50,8 +51,8 @@ UserSchema.pre("save", async function (next) {
   }
 });
 
-UserSchema.method("comparePassword", async function (password: string) {
+UserSchema.method("authenticate", async function (password: string) {
   return compare(password, this.password);
 });
 
-export default model("User", UserSchema, "users");
+export default Mongoose.model("User", UserSchema, "users");
