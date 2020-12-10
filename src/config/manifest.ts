@@ -18,6 +18,9 @@ let internals: any = {
           plugin: "./datasources/mongodb",
           options: Config.get("/mongodb"),
         },
+        {
+          plugin: "./routes/auth",
+        },
       ],
     },
   },
