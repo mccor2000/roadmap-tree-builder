@@ -14,10 +14,22 @@ let internals: any = {
     },
     register: {
       plugins: [
+        /* DATASOURCES */
         {
           plugin: "./datasources/mongodb",
           options: Config.get("/mongodb"),
         },
+
+        /* AUTHENTICATION */
+        {
+          plugin: "hapi-auth-jwt2",
+        },
+        {
+          plugin: "./helpers/jwtAuth",
+          options: Config.get("/jwtAuthOptions"),
+        },
+
+        /* APIs */
         {
           plugin: "./routes/auth",
         },
