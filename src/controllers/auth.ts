@@ -71,7 +71,9 @@ export const login = {
 
   handler: async (request: Request, h: ResponseToolkit) => {
     try {
-      const serviceResponse = await AuthService.loginUser(request.payload);
+      const serviceResponse = await AuthService.loginUser(
+        request.payload as { email: string; password: string }
+      );
 
       return h
         .response({
