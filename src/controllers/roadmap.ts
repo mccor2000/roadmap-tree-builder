@@ -1,28 +1,30 @@
 import { Request, ResponseToolkit } from "hapi";
 import * as Joi from "@hapi/joi";
 
+import * as RoadmapServices from "../services/roadmap";
+import handleValidationError from "../helpers/handleValidationError";
+
 export const getRoadmaps = {
   options: {
     auth: "jwt",
-
     validate: {
-      payload: Joi.object({}),
-
-      failAction: (
-        _request: Request,
-        h: ResponseToolkit,
-        error: Joi.ValidationError
-      ) => {
-        return h
-          .response({ message: error.details[0].message.replace(/['"]+/g, "") })
-          .code(400)
-          .takeover();
-      },
+      query: Joi.object({
+        limit: Joi.number().integer().min(1).max(100).default(10),
+      }),
+      failAction: handleValidationError,
     },
   },
 
   handler: async (request: Request, h: ResponseToolkit) => {
     try {
+      const serviceResponse = await RoadmapServices.getRoadmaps(
+        request.auth.credentials,
+        request.query
+      );
+
+      return h
+        .response({ data: serviceResponse.data })
+        .code(serviceResponse.statusCode);
     } catch (error) {
       return error.message;
     }
@@ -34,23 +36,32 @@ export const createRoadmap = {
     auth: "jwt",
 
     validate: {
-      payload: Joi.object({}),
+      payload: Joi.object({
+        name: Joi.string().max(128).required(),
+        overview: Joi.string(),
+        fieldName: Joi.string(),
+        subjectName: Joi.string(),
+        isPrivate: Joi.boolean().required(),
+      }),
 
-      failAction: (
-        _request: Request,
-        h: ResponseToolkit,
-        error: Joi.ValidationError
-      ) => {
-        return h
-          .response({ message: error.details[0].message.replace(/['"]+/g, "") })
-          .code(400)
-          .takeover();
-      },
+      failAction: handleValidationError,
     },
   },
 
   handler: async (request: Request, h: ResponseToolkit) => {
     try {
+      const serviceResponse = await RoadmapServices.createRoadmap(
+        request.auth.credentials,
+        request.payload
+      );
+      console.log(serviceResponse);
+
+      return h
+        .response({
+          message: serviceResponse.message,
+          data: serviceResponse.data,
+        })
+        .code(serviceResponse.statusCode);
     } catch (error) {
       return error.message;
     }
@@ -62,51 +73,56 @@ export const getRoadmapById = {
     auth: "jwt",
 
     validate: {
-      payload: Joi.object({}),
+      params: Joi.object({
+        id: Joi.string().required(),
+      }),
 
-      failAction: (
-        _request: Request,
-        h: ResponseToolkit,
-        error: Joi.ValidationError
-      ) => {
-        return h
-          .response({ message: error.details[0].message.replace(/['"]+/g, "") })
-          .code(400)
-          .takeover();
-      },
+      failAction: handleValidationError,
     },
   },
 
   handler: async (request: Request, h: ResponseToolkit) => {
     try {
+      const serviceResponse = await RoadmapServices.getRoadmapById(
+        request.auth.credentials,
+        request.params.id
+      );
+
+      return h
+        .response({
+          message: serviceResponse.message,
+          data: serviceResponse.data,
+        })
+        .code(serviceResponse.statusCode);
     } catch (error) {
       return error.message;
     }
   },
 };
 
-export const updateroadmapbyid = {
+export const updateRoadmapById = {
   options: {
     auth: "jwt",
 
     validate: {
-      payload: Joi.object({}),
-
-      failaction: (
-        _request: Request,
-        h: ResponseToolkit,
-        error: Joi.ValidationError
-      ) => {
-        return h
-          .response({ message: error.details[0].message.replace(/['"]+/g, "") })
-          .code(400)
-          .takeover();
-      },
+      failAction: handleValidationError,
     },
   },
 
   handler: async (request: Request, h: ResponseToolkit) => {
     try {
+      const serviceResponse = await RoadmapServices.updateRoadmapById(
+        request.auth.credentials,
+        request.params.id,
+        request.payload
+      );
+
+      return h
+        .response({
+          message: serviceResponse.message,
+          data: serviceResponse.data,
+        })
+        .code(serviceResponse.statusCode);
     } catch (error) {
       return error.message;
     }
@@ -118,23 +134,27 @@ export const deleteRoadmapById = {
     auth: "jwt",
 
     validate: {
-      payload: Joi.object({}),
+      params: Joi.object({
+        id: Joi.string().required(),
+      }),
 
-      failaction: (
-        _request: Request,
-        h: ResponseToolkit,
-        error: Joi.ValidationError
-      ) => {
-        return h
-          .response({ message: error.details[0].message.replace(/['"]+/g, "") })
-          .code(400)
-          .takeover();
-      },
+      failAction: handleValidationError,
     },
   },
 
   handler: async (request: Request, h: ResponseToolkit) => {
     try {
+      const serviceResponse = await RoadmapServices.deleteRoadmapById(
+        request.auth.credentials,
+        request.params.id
+      );
+
+      return h
+        .response({
+          message: serviceResponse.message,
+          data: serviceResponse.data,
+        })
+        .code(serviceResponse.statusCode);
     } catch (error) {
       return error.message;
     }

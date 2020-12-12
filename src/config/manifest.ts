@@ -33,6 +33,9 @@ let internals: any = {
         {
           plugin: "./routes/auth",
         },
+        {
+          plugin: "./routes/roadmap",
+        },
       ],
     },
   },

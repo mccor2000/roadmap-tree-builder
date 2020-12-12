@@ -4,7 +4,7 @@ import * as Config from "../config/config";
 
 export const signupUser = async (
   userData: User
-): Promise<{ statusCode: number; message: string; data?: object }> => {
+): Promise<{ statusCode: number; message?: string; data?: any }> => {
   return new Promise(async (resolve, reject) => {
     try {
       if (await isUserAlreadyExist(userData.email)) {

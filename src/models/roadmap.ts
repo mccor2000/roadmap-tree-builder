@@ -11,7 +11,7 @@ export interface RoadmapNode extends Mongoose.Document {
 }
 
 export interface Roadmap extends Mongoose.Document {
-  title: string;
+  name: string;
 
   overview: string;
 
@@ -20,6 +20,8 @@ export interface Roadmap extends Mongoose.Document {
   subjectName: string;
 
   owner: string;
+
+  isPrivate: boolean;
 
   nodes: [RoadmapNode];
 }
@@ -36,7 +38,7 @@ const RoadmapNodeSchema = new Mongoose.Schema({
 
 const RoadmapSchema = new Mongoose.Schema(
   {
-    title: { type: String, required: true },
+    name: { type: String, required: true },
 
     overview: { type: String },
 
@@ -45,6 +47,8 @@ const RoadmapSchema = new Mongoose.Schema(
     subjectName: { type: String, required: true },
 
     owner: { type: Mongoose.Schema.Types.ObjectId, ref: "users" },
+
+    isPrivate: { type: Boolean, default: true },
 
     nodes: { type: [RoadmapNodeSchema] },
   },
