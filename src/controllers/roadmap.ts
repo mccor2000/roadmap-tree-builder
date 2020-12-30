@@ -8,9 +8,7 @@ export const getRoadmaps = {
   options: {
     auth: "jwt",
     validate: {
-      query: Joi.object({
-        limit: Joi.number().integer().min(1).max(100).default(10),
-      }),
+      query: Joi.object(),
       failAction: handleValidationError,
     },
   },
