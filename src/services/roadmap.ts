@@ -1,12 +1,19 @@
 import RoadmapModel, { Roadmap } from "../models/roadmap";
 
 export const getRoadmaps = async (
-  _user: any,
-  filter: any
+  user: any,
+  filter: any = {}
 ): Promise<{ statusCode: number; message?: string; data?: any }> => {
   return new Promise(async (resolve, reject) => {
     try {
-      const roadmaps = await RoadmapModel.find(filter).lean().exec();
+      const roadmaps = await RoadmapModel.find({
+        $or: [
+          { ...filter, isPrivate: false },
+          { ...filter, isPrivate: true, owner: user.id },
+        ],
+      })
+        .lean()
+        .exec();
 
       return resolve({
         statusCode: 200,
@@ -102,7 +109,8 @@ export const updateRoadmapById = async (
           message: `Roadmap not found`,
         });
 
-      if (existingRoadmap.isPrivate && existingRoadmap.owner !== user.id)
+      console.log(existingRoadmap.owner, user.id);
+      if (existingRoadmap.owner != user.id)
         return resolve({
           statusCode: 403,
           message: `You do not have access to this roadmap`,
@@ -138,7 +146,7 @@ export const deleteRoadmapById = async (
           message: `Roadmap not found`,
         });
 
-      if (existingRoadmap.isPrivate && existingRoadmap.owner !== user.id)
+      if (existingRoadmap.owner != user.id)
         return resolve({
           statusCode: 403,
           message: `You do not have access to this roadmap`,
